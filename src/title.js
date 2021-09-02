@@ -1,9 +1,9 @@
-import { sprImg } from "./Sprite.js";
-import { music, button1 } from "./sound.js";
+import { sprImg } from "./sprite.js";
+import { button1 } from "./sound.js";
 
 export class spr_title extends sprImg {
-    constructor( img, width, height , x , y){
-        super( img, width, height , x, y);
+    constructor( img, width, height , x , y ){
+        super( img, width, height , x, y );
         this.blankAlpha = 1;
         this.pushFlag = false;
     }
@@ -127,7 +127,7 @@ export class spr_start extends sprImg {
             this.y, 
             this.width/3*2, 
             this.height/3*2, 
-		);
+        );
     }
 
     render_pushed() {

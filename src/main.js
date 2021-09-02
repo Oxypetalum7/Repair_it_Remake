@@ -1,7 +1,7 @@
 import { Game } from './game.js';
 import { Scene } from './scene.js';
-import { sprImg } from './Sprite.js';
 import { spr_title, spr_spana, spr_start } from "./title.js";
+import { Spr_back1, Caption1, Fighter, Bomb } from './mission1.js';
 import { music } from "./sound.js"
 addEventListener( 'load', () => {
 
@@ -28,12 +28,11 @@ addEventListener( 'load', () => {
 		scene.add(start)
 
 		scene.onenterframe = () => {
-			//スペースキーが押されたとき、メインシーンに切り替える
 			if ( start.pushFlag ) {
 				setTimeout(() => {
 					music.pause()
 					game.currentScene = mainScene();
-				}, 2000)
+				}, 1100)
 			}
 		} //scene.onenterframe() 終了
 
@@ -42,12 +41,22 @@ addEventListener( 'load', () => {
 
 	const mainScene = () => {
 		const scene = new Scene();
-		const Game = new sprImg()
+		const background = new Spr_back1('../img/background.png', 640, 480, 0, 0);
+		const caption = new Caption1('../img/mission1.png', 300, 51, 50, 300);
+		const fighter1 = new Fighter('../img/fighter.png', 200, 124, -200, 100);
+		scene.add(background)
+		scene.add(caption)
+		scene.add(fighter1)
+		scene.onenterframe = () => {
+			if(fighter1.count % 55 == 0) {
+				const tmp = new Bomb('../img/bomb.png', 32, 32, fighter1.x, fighter1.y)
+				game.currentScene.add(tmp);
+			}
+		}
 		return scene;
 	}
 
 	game.add( titleScene() );
-	game.add( mainScene() );
 	game.start()
 
 } );
