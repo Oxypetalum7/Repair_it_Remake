@@ -11,6 +11,9 @@ export class Game {
         this.isGameClicked = false;
     }
     start() {
+		this.keybind( 'right', 'ArrowRight' );
+		this.keybind( 'left', 'ArrowLeft' );
+
         canvas.addEventListener("click", e => {
             if (!this.isGameClicked){
                 music.play()
@@ -28,6 +31,8 @@ export class Game {
         })
         this.currentScene = this.currentScene || this.scenes[0];
         this.mainLoop()
+
+        this._setEventListener();
     }
 
     mainLoop() {
@@ -48,4 +53,37 @@ export class Game {
 		//引数がSceneでなければ、コンソールにエラーを表示
 		else console.error( 'Gameに追加できるのはSceneだけだよ！' );
 	} //add()終了
+
+    _setEventListener() {
+		//なにかキーが押されたときと、はなされたときに呼ばれる
+		const _keyEvent = e => {
+			//デフォルトのイベントを発生させない
+			e.preventDefault();
+			//_keysに登録された数だけ繰り返す
+			for ( let key in this._keys ) {
+				//イベントのタイプによって呼び出すメソッドを変える
+				switch ( e.type ) {
+					case 'keydown' :
+						//押されたキーが、登録されたキーの中に存在するとき、inputのそのキーをtrueにする
+						if ( e.key === this._keys[key] ) this.input[key] = true;
+						break;
+					case 'keyup' :
+						//押されたキーが、登録されたキーの中に存在するとき、inputのそのキーをfalseにする
+						if ( e.key === this._keys[key] ) this.input[key] = false;
+						break;
+				}
+			}
+		}
+		//なにかキーが押されたとき
+		addEventListener( 'keydown', _keyEvent, { passive: false } );
+		//キーがはなされたとき
+		addEventListener( 'keyup', _keyEvent, { passive: false } );
+	} //_setEventListener() 終了
+
+    keybind( name, key ) {
+		//キーの名前と、キーコードを関連づける
+		this._keys[name] = key;
+		//キーが押されているかどうかを入れておく変数に、まずはfalseを代入しておく
+		this.input[name] = false;
+	} //keybind() 終了
 }

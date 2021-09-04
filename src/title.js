@@ -51,7 +51,7 @@ export class spr_spana extends sprImg {
         if (this.pushFlag) {
             if (this.blankAlpha > 0) {
                 this.blankAlpha = (this.blankAlpha*1000 - 20)/1000;
-                console.log(this.blankAlpha)
+                //console.log(this.blankAlpha)
             }
         }
         this.frameCount++

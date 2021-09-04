@@ -1,7 +1,7 @@
 import { Game } from './game.js';
 import { Scene } from './scene.js';
 import { spr_title, spr_spana, spr_start } from "./title.js";
-import { Spr_back1, Caption1, Fighter, Bomb } from './mission1.js';
+import { Spr_back1, Caption1, Fighter, Bomb, Chara, Battery} from './mission1.js';
 import { music } from "./sound.js"
 addEventListener( 'load', () => {
 
@@ -30,7 +30,6 @@ addEventListener( 'load', () => {
 		scene.onenterframe = () => {
 			if ( start.pushFlag ) {
 				setTimeout(() => {
-					music.pause()
 					game.currentScene = mainScene();
 				}, 1100)
 			}
@@ -43,14 +42,35 @@ addEventListener( 'load', () => {
 		const scene = new Scene();
 		const background = new Spr_back1('../img/background.png', 640, 480, 0, 0);
 		const caption = new Caption1('../img/mission1.png', 300, 51, 50, 300);
-		const fighter1 = new Fighter('../img/fighter.png', 200, 124, -200, 100);
+		const fighter = new Fighter('../img/fighter.png', 200, 124, -200, 100);
+		const chara = new Chara('../img/charachip5.png', 32, 32, 50, 400)
+		const batteries = [];
+		for (let i =0; i < 3; i++) {
+			batteries.push(new Battery('../img/Battery.png', 64, 64, 100 + i * 180, 370))
+		}
 		scene.add(background)
 		scene.add(caption)
-		scene.add(fighter1)
+		scene.add(fighter)
+		for (let i =0; i < 3; i++) {
+			scene.add(batteries[i])
+		}
+		scene.add(chara)
 		scene.onenterframe = () => {
-			if(fighter1.count % 55 == 0) {
-				const tmp = new Bomb('../img/bomb.png', 32, 32, fighter1.x, fighter1.y)
+			
+			if (game.input.left) chara.walkToLeft()
+			if (game.input.right) chara.walkToRight()
+
+			if(fighter.count % 55 == 0) {
+				const tmp = new Bomb('../img/bomb.png', 32, 32, fighter.x, fighter.y)
 				game.currentScene.add(tmp);
+			}
+
+			for ( let i=0; i<game.currentScene.objs.length; i++ ) {
+				if (game.currentScene.objs[i] instanceof Bomb) {
+					if(game.currentScene.objs[i].hit == true) {
+						chara.hit(game.currentScene.objs[i])
+					}
+				}
 			}
 		}
 		return scene;

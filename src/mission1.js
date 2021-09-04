@@ -1,3 +1,4 @@
+import { voice1 } from "./sound.js";
 import { sprImg } from "./sprite.js";
 
 export class Spr_back1 extends sprImg {
@@ -73,7 +74,7 @@ export class Fighter extends sprImg {
 
     update(canvas) {
         this.x += this.dx;
-        console.log(this.x)
+        //console.log(this.x)
         if((this.x > 840 || this.x < -200)) {
             this.dx = -this.dx
             this.scale = -this.scale
@@ -108,11 +109,13 @@ export class Bomb extends sprImg {
         this.drawStateX = 0;
         this.drawStateY = 0;
         this.count = 0;
+        this.hit = true;
     }
 
     update(canvas) {
         this.render(canvas)
         this.count++;
+        if (this.drawStateX > 2) this.hit = false;
         if(this.y > 400) {
             if(this.count % 12 == 0){
                 this.drawStateX ++;
@@ -142,5 +145,100 @@ export class Bomb extends sprImg {
     }
 }
 
+export class Chara extends sprImg {
+    constructor( img, width, height , x , y ) {
+        super( img, width, height , x, y );
+        this.drawStateX = 0;
+        this.drawStateY = 2;
+        this.frameCount = 0.0;
+        this.damaged = false;
+        this.count = 0;
+        this.alpha = 1;
+    }
 
+    update(canvas) {
+        this.frameCount+= 0.5;
+        if(this.damaged && this.count < 50) {
+            this.alhpa = 1 + Math.sin(((this.frameCount%2)*Math.PI)) 
+            this.count++
+        } else {
+            this.alhpa = 1;
+            this.count = 0;
+            this.damaged = false
+        }
+        this.render(canvas)
+    }
 
+    render() {
+        const _ctx =canvas.getContext( '2d' );
+        _ctx.globalAlpha = this.alhpa;
+        _ctx.drawImage(
+            this.img,
+            0 + this.drawStateX % 3 * 32,
+            0 + this.drawStateY * 32,
+            this.width, 
+            this.height, 
+            this.x, 
+            this.y, 
+            this.width*1, 
+            this.height*1, 
+		);
+        _ctx.globalAlpha = 1;
+    }
+
+    hit(obj) {
+        if((Math.abs(this.x - obj.x) < this.width/2 + obj.width/2) && (Math.abs(this.y - obj.y) < this.height/2 + obj.height/2)){
+            console.log('hit');
+            obj.hit = false;
+            voice1.play()
+            this.damaged = true;
+        }
+    }
+
+    walkToRight() {
+        if(this.x + this.width < 640){
+            this.x += 4;
+            this.drawStateY = 2;
+            this.drawStateX++;
+        }   
+    }
+
+    walkToLeft() {
+        if(this.x > 0){
+            this.x -= 4;
+            this.drawStateY = 1;
+            this.drawStateX++;
+        }
+    }
+}
+
+export class Battery extends sprImg {
+    constructor( img, width, height , x , y ) {
+        super( img, width, height , x, y );
+        this.drawStateX = 0;
+        this.drawStateY = 2;
+        this.frameCount = 0.0;
+        this.damaged = false;
+        this.count = 0;
+        this.alpha = 1;
+    }
+
+    update(canvas) {
+        this.render(canvas)
+    }
+
+    render() {
+        const _ctx =canvas.getContext( '2d' );
+        _ctx.drawImage(
+            this.img,
+            0, 
+            64, 
+            this.width, 
+            this.height, 
+            this.x, 
+            this.y, 
+            this.width, 
+            this.height, 
+		);
+    }
+}
