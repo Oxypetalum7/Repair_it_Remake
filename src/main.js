@@ -30,7 +30,7 @@ addEventListener( 'load', () => {
 		scene.onenterframe = () => {
 			if ( start.pushFlag ) {
 				setTimeout(() => {
-					game.currentScene = mainScene();
+					game.currentScene = mainScene1();
 				}, 1100)
 			}
 		} //scene.onenterframe() 終了
@@ -38,12 +38,13 @@ addEventListener( 'load', () => {
 		return scene;
 	}
 
-	const mainScene = () => {
+	const mainScene1 = () => {
 		const scene = new Scene();
 		const background = new Spr_back1('../img/background.png', 640, 480, 0, 0);
 		const caption = new Caption1('../img/mission1.png', 300, 51, 50, 300);
 		const fighter = new Fighter('../img/fighter.png', 200, 124, -200, 100);
-		const chara = new Chara('../img/charachip5.png', 32, 32, 50, 400)
+		const chara = new Chara('../img/charachip5.png', 32, 32, 50, 400);
+		let flag
 		const batteries = [];
 		for (let i =0; i < 3; i++) {
 			batteries.push(new Battery('../img/Battery.png', 64, 64, 100 + i * 180, 370))
@@ -59,20 +60,35 @@ addEventListener( 'load', () => {
 			
 			if (game.input.left) chara.walkToLeft()
 			if (game.input.right) chara.walkToRight()
-
-			if(fighter.count % 55 == 0) {
+			if(fighter.count % 35 == 0) {
 				const tmp = new Bomb('../img/bomb.png', 32, 32, fighter.x, fighter.y)
 				game.currentScene.add(tmp);
 			}
 
 			for ( let i=0; i<game.currentScene.objs.length; i++ ) {
-				if (game.currentScene.objs[i] instanceof Bomb) {
-					if(game.currentScene.objs[i].hit == true) {
-						chara.hit(game.currentScene.objs[i])
-					}
+					let flag = []
+					if (game.currentScene.objs[i] instanceof Bomb) {
+						if(game.currentScene.objs[i].hit == true) {
+							chara.hit(game.currentScene.objs[i])
+						}
+					} else if (game.currentScene.objs[i] instanceof Battery) {
+						if(game.currentScene.objs[i].isBatteryOn(chara)) {
+							if(game.input.space) {
+								console.log('test')
+								game.currentScene.objs[i].fixStat += 0.5
+							}
+						}
 				}
 			}
+
+			if( batteries[0].isFixed && batteries[1].isFixed && batteries[2].isFixed) game.currentScene = mainScene2()
 		}
+		return scene;
+	}
+
+	const mainScene2 = () => {
+		console.log('1 cleared')
+		const scene = new Scene();
 		return scene;
 	}
 

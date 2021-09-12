@@ -13,6 +13,7 @@ export class Game {
     start() {
 		this.keybind( 'right', 'ArrowRight' );
 		this.keybind( 'left', 'ArrowLeft' );
+        this.keybind( 'space' , ' '  )
 
         canvas.addEventListener("click", e => {
             if (!this.isGameClicked){
@@ -84,6 +85,6 @@ export class Game {
 		//キーの名前と、キーコードを関連づける
 		this._keys[name] = key;
 		//キーが押されているかどうかを入れておく変数に、まずはfalseを代入しておく
-		this.input[name] = false;
+		this.input[name] = false;         
 	} //keybind() 終了
 }

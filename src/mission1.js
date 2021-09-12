@@ -221,9 +221,15 @@ export class Battery extends sprImg {
         this.damaged = false;
         this.count = 0;
         this.alpha = 1;
+        this.isFixed = false;
+        this.fixStat = 0.0;
     }
 
     update(canvas) {
+        if(this.fixStat > 50){
+            this.fixStat = 50
+            this.isFixed = true
+        }
         this.render(canvas)
     }
 
@@ -240,5 +246,26 @@ export class Battery extends sprImg {
             this.width, 
             this.height, 
 		);
+        _ctx.beginPath();
+        _ctx.fillStyle = 'blue'
+        _ctx.lineWidth = 2;
+        _ctx.rect( this.x + 50, this.y - 25, 20, 50 )
+        _ctx.fill() ;
+        _ctx.stroke() ;
+        _ctx.beginPath();
+        _ctx.fillStyle = 'white'
+        _ctx.lineWidth = 1;
+        _ctx.rect( this.x + 50, this.y - 25, 20, 50 - this.fixStat )
+        _ctx.fill() ;
+        _ctx.stroke() ;
+    }
+
+    isBatteryOn(obj) {
+        if((Math.abs(this.x - obj.x) < this.width/2 + obj.width/2) && (Math.abs(this.y - obj.y) < this.height/2 + obj.height/2)){
+            console.log('hit');
+            return true
+        } else {
+            return false
+        }
     }
 }
